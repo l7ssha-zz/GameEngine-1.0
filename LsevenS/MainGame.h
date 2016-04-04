@@ -25,8 +25,8 @@
 #include <PragmaEngine\GLTexture.h>
 #include <PragmaEngine\Sprite.h>
 #include <PragmaEngine\Errors.h>
-#include <PragmaEngine\PragmaEngine.h>
 
+#include <PragmaEngine\Engine.h>
 
 enum class GameState {PLAY, EXIT};
 
@@ -45,6 +45,8 @@ private:
     void processInput();
     void drawGame();
 
+	void calculateFPS();
+
     SDL_Window* _window;
     int _screenWidth;
     int _screenHeight;
@@ -57,5 +59,9 @@ private:
     //GLTexture _playerTexture;
 
     float _time;
+
+	float _frameTime;
+	float _fps;
+	float _maxFPS = 500.0f;
 };
 
