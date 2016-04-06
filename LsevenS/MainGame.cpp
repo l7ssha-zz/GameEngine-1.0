@@ -92,7 +92,7 @@ void MainGame::gameLoop() {
 		static int frameCounter = 0;
 		frameCounter++;
 		if (frameCounter == 80) {
-			std::cout << _fps << std::endl;
+			std::cout << floor(_fps) << std::endl;
 			frameCounter = 0;
 		}
 

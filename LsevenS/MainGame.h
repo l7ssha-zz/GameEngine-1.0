@@ -20,6 +20,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <math.h>
 
 #include <PragmaEngine\GLSLProgram.h>
 #include <PragmaEngine\GLTexture.h>
@@ -62,6 +63,6 @@ private:
 
 	float _frameTime;
 	float _fps;
-	float _maxFPS = 500.0f;
+	float _maxFPS = 400.0f;
 };
 
