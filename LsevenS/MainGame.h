@@ -1,33 +1,29 @@
 /*
-------------------------- GAME ENGINE BY L7SSHA | ALL RIGTS RESERVED -------------------------
- PragamEngine version 1.0
- Copyright (c) 2016 Szymon "l7ssha" Uglis
+------------------------- GAME TEST BY L7SSHA | ALL RIGTS RESERVED -------------------------
+GameTest version 1.0
+Copyright (c) 2016 Szymon "l7ssha" Uglis
 
- This software is provided 'as-is', without any express or implied
- warranty. In no event will the authors be held liable for any damages
- arising from the use of this software.
+This software is provided 'as-is', without any express or implied
+warranty. In no event will the authors be held liable for any damages
+arising from the use of this software.
 
- Permission is granted to no one to use this software for any purpose,
- including commercial application
+Permission is granted to no one to use this software for any purpose,
+including commercial application
 
-------------------------- GAME ENGINE BY L7SSHA | ALL RIGTS RESERVED -------------------------
+------------------------- GAME TEST BY L7SSHA | ALL RIGTS RESERVED -------------------------
 */
 #pragma once
 
 #include <SDL/SDL.h>
 #include <GL/glew.h>
-
-#include <iostream>
-#include <string>
 #include <vector>
 #include <math.h>
 
 #include <PragmaEngine\GLSLProgram.h>
 #include <PragmaEngine\GLTexture.h>
 #include <PragmaEngine\Sprite.h>
-#include <PragmaEngine\Errors.h>
-
 #include <PragmaEngine\Engine.h>
+
 
 enum class GameState {PLAY, EXIT};
 
@@ -45,24 +41,21 @@ private:
     void gameLoop();
     void processInput();
     void drawGame();
-
-	void calculateFPS();
+    void calculateFPS();
 
     SDL_Window* _window;
     int _screenWidth;
     int _screenHeight;
     GameState _gameState;
 
-	std::vector <Sprite*> _sprites;
-    Sprite _sprite;
+    std::vector <Sprite*> _sprites;
 
     GLSLProgram _colorProgram;
-    //GLTexture _playerTexture;
+
+    float _fps;
+    float _maxFPS = 500.0f;
+    float _frameTime;
 
     float _time;
-
-	float _frameTime;
-	float _fps;
-	float _maxFPS = 400.0f;
 };
 
