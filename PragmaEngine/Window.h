@@ -12,17 +12,36 @@ including commercial application
 
 ------------------------- GAME ENGINE BY L7SSHA | ALL RIGTS RESERVED -------------------------
 */
+
 #pragma once
 
-#include <vector>
-#include <fstream>
+#include <SDL\SDL.h>
+#include <GL\glew.h>
+#include <string>
+#include <cstdlib>
+#include <iostream>
+
+#include "Errors.h"
 
 namespace PragmaEngine {
 
-	class IOManager
+	enum WindowFlag { INVISIBLE = 0x1, FULLSCREN = 0x2, BORDER = 0x4 };
+
+	class Window
 	{
 	public:
-		static bool readFileToBuffer(std::string filePath, std::vector<unsigned char>& buffer);
+		Window();
+		~Window();
+
+		int createWindow(std::string windowName, int windowHeight, int windowWidth, unsigned int flag);
+		void swapBuffer();
+		void WindowAtributes(bool doublebuffer = false, bool SwapInterval = false);
+
+		int GetWindowHeight() { return _windowHeight; }
+		int GetWindowWitdh() { return _windowWidth; }
+	private:
+		SDL_Window* _sdlwindow;
+		int _windowHeight, _windowWidth;
 	};
 
 }

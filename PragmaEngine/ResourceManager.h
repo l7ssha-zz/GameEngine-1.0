@@ -18,14 +18,17 @@ including commercial application
 
 #include "TextureCache.h"
 
-class ResourceManager
-{
-public:
-	static GLTexture getTexture(std::string texturePath);
-	//static GLuint currentlyBoundTexture;
+namespace PragmaEngine {
 
-private:
-	static TextureCache _texturecache;
-	
-};
+	class ResourceManager
+	{
+	public:
+		static GLTexture getTexture(std::string texturePath);
+		//static GLuint currentlyBoundTexture;
 
+	private:
+		static TextureCache _texturecache;
+
+	};
+
+}

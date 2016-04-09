@@ -1,32 +1,29 @@
 #include "TextureCache.h"
 
+namespace PragmaEngine {
 
+	TextureCache::TextureCache() {}
 
-TextureCache::TextureCache()
-{
-}
+	TextureCache::~TextureCache() {}
 
+	GLTexture TextureCache::getTexture(std::string texturePath)
+	{
+		auto mit = _textureMap.find(texturePath);	//lookup for texture
 
-TextureCache::~TextureCache()
-{
-}
+		//check the map
+		if (mit == _textureMap.end()) {
+			GLTexture newTexture = ImageLoader::loadPNG(texturePath);	//load PNG
 
-GLTexture TextureCache::getTexture(std::string texturePath)
-{
-	auto mit = _textureMap.find(texturePath);	//lookup for texture
+			_textureMap.insert(make_pair(texturePath, newTexture));	//insert to MAP
 
-	//check the map
-	if (mit == _textureMap.end()) {
-		GLTexture newTexture = ImageLoader::loadPNG(texturePath);	//load PNG
+			std::cout << "Texture cached & loaded" << std::endl;
 
-		_textureMap.insert(make_pair(texturePath, newTexture));	//insert to MAP
+			return newTexture;
+		}
 
-		std::cout << "Texture cached" << std::endl;
+		std::cout << "Texture loaded from cache" << std::endl;
+		return mit->second;	//return texture from cache
 
-		return newTexture;
 	}
-
-	std::cout << "Texture loaded from cache" << std::endl;
-	return mit->second;	//return texture from cache
 
 }

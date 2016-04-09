@@ -23,9 +23,10 @@ including commercial application
 #include <PragmaEngine\GLTexture.h>
 #include <PragmaEngine\Sprite.h>
 #include <PragmaEngine\Engine.h>
+#include <PragmaEngine\Window.h>
 
 
-enum class GameState {PLAY, EXIT};
+enum class GameState { PLAY, EXIT };
 
 class MainGame
 {
@@ -43,14 +44,14 @@ private:
     void drawGame();
     void calculateFPS();
 
-    SDL_Window* _window;
+    PragmaEngine::Window _window;
     int _screenWidth;
     int _screenHeight;
     GameState _gameState;
 
-    std::vector <Sprite*> _sprites;
+    std::vector <PragmaEngine::Sprite*> _sprites;
 
-    GLSLProgram _colorProgram;
+	PragmaEngine::GLSLProgram _colorProgram;
 
     float _fps;
     float _maxFPS = 500.0f;

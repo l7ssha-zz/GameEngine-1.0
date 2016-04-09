@@ -21,4 +21,8 @@ including commercial application
 #include <iostream>
 #include <SDL/SDL.h>
 
-extern void fatalError(std::string errorString);
+namespace PragmaEngine {
+
+	extern void fatalError(std::string errorString);
+
+}
