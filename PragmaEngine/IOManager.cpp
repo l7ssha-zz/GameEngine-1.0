@@ -1,25 +1,29 @@
 #include "IOManager.h"
 
-bool IOManager::readFileToBuffer(std::string filePath, std::vector<unsigned char>& buffer) {
-    std::ifstream file(filePath, std::ios::binary);
-    if (file.fail()) {
-        perror(filePath.c_str());
-        return false;
-    }
+namespace PragmaEngine {
 
-    //seek to the end
-    file.seekg(0, std::ios::end);
+	bool IOManager::readFileToBuffer(std::string filePath, std::vector<unsigned char>& buffer) {
+		std::ifstream file(filePath, std::ios::binary);
+		if (file.fail()) {
+			perror(filePath.c_str());
+			return false;
+		}
 
-    //Get the file size
-    int fileSize = file.tellg();
-    file.seekg(0, std::ios::beg);
+		//seek to the end
+		file.seekg(0, std::ios::end);
 
-    //Reduce the file size by any header bytes that might be present
-    fileSize -= file.tellg();
+		//Get the file size
+		int fileSize = file.tellg();
+		file.seekg(0, std::ios::beg);
 
-    buffer.resize(fileSize);
-    file.read((char *)&(buffer[0]), fileSize);
-    file.close();
+		//Reduce the file size by any header bytes that might be present
+		fileSize -= file.tellg();
 
-    return true;
+		buffer.resize(fileSize);
+		file.read((char *)&(buffer[0]), fileSize);
+		file.close();
+
+		return true;
+	}
+
 }

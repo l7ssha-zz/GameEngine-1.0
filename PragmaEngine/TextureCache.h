@@ -20,16 +20,19 @@ including commercial application
 #include "GLTexture.h"
 #include "ImageLoader.h"
 
-class TextureCache
-{
-public:
-	TextureCache();
-	~TextureCache();
+namespace PragmaEngine {
 
-	GLTexture getTexture(std::string texturePath);
+	class TextureCache
+	{
+	public:
+		TextureCache();
+		~TextureCache();
 
-private:
-	std::map<std::string, GLTexture> _textureMap;
+		GLTexture getTexture(std::string texturePath);
 
-};
+	private:
+		std::map<std::string, GLTexture> _textureMap;
 
+	};
+
+}

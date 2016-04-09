@@ -19,3 +19,13 @@ including commercial application
 
 #define NATIVE_WINDOW_NAME "Game Window"
 #define WINDOW_PTR nullptr
+
+
+#include <SDL\SDL.h>
+#include <GL\glew.h>
+
+namespace PragmaEngine {
+
+	extern int initEngine();
+
+}

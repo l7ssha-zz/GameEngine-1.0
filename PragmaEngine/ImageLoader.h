@@ -20,10 +20,13 @@ including commercial application
 
 #include <string>
 
-//Loads images into GLTextures
-class ImageLoader
-{
-public:
-    static GLTexture loadPNG(std::string filePath);
-};
+namespace PragmaEngine {
 
+	//Loads images into GLTextures
+	class ImageLoader
+	{
+	public:
+		static GLTexture loadPNG(std::string filePath);
+	};
+
+}
