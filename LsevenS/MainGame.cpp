@@ -7,7 +7,7 @@ MainGame::MainGame() :
 	_time(0.0f),
 	_gameState(GameState::PLAY)
 {
-
+	_camera2d.init(_screenWidth, _screenHeight);
 }
 
 //Destructor
@@ -21,10 +21,10 @@ void MainGame::run() {
 
 	//Initialize our sprites. (temporary)
 	_sprites.push_back(new PragmaEngine::Sprite());
-	_sprites.back()->init(-1.0f, -1.0f, 1.0f, 1.0f, "Textures/jimmyJump_pack/PNG/CharacterRight_Standing.png");
+	_sprites.back()->init(0.0f, 0.0f, _screenWidth / 2, _screenWidth / 2, "Textures/jimmyJump_pack/PNG/CharacterRight_Standing.png");
 
 	_sprites.push_back(new PragmaEngine::Sprite());
-	_sprites.back()->init(0.0f, -1.0f, 1.0f, 1.0f, "Textures/jimmyJump_pack/PNG/CharacterRight_Standing.png");
+	_sprites.back()->init(_screenWidth / 2, 0.0f, _screenWidth / 2, _screenWidth / 2, "Textures/jimmyJump_pack/PNG/CharacterRight_Standing.png");
 
 	//This only returns when the game ends
 	gameLoop();
@@ -36,6 +36,8 @@ void MainGame::initSystems() {
 	_window.createWindow("Game Window", 600, 800, 0);	//create window
 
 	_window.WindowAtributes(); //Tell SDL that we want a double buffered window so we dont get any flickering
+
+	//PragmaEngine::fatalerrorTest("ERROR");
 
 	initShaders();
 }
@@ -58,6 +60,9 @@ void MainGame::gameLoop() {
 
 		processInput();
 		_time += 0.01;
+
+		_camera2d.update();
+
 		drawGame();
 		calculateFPS();
 
@@ -81,6 +86,9 @@ void MainGame::gameLoop() {
 void MainGame::processInput() {
 	SDL_Event evnt;
 
+	const float CAMERA_SPEED = 20.0f;
+	const float SCALE_SPEED = 0.1f;
+
 	//Will keep looping until there are no more events to process
 	while (SDL_PollEvent(&evnt)) {
 		switch (evnt.type) {
@@ -89,6 +97,30 @@ void MainGame::processInput() {
 			break;
 		case SDL_MOUSEMOTION:
 			//std::cout << evnt.motion.x << " " << evnt.motion.y << std::endl;
+			break;
+		case SDL_KEYDOWN:
+			switch (evnt.key.keysym.sym) {
+				//Get the input and use it to move the camera
+				//THIS IS TEMPORARY
+			case SDLK_w:
+				_camera2d.setPosition(_camera2d.getPosition() + glm::vec2(0.0f, -CAMERA_SPEED));
+				break;
+			case SDLK_s:
+				_camera2d.setPosition(_camera2d.getPosition() + glm::vec2(0.0f, CAMERA_SPEED));
+				break;
+			case SDLK_a:
+				_camera2d.setPosition(_camera2d.getPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
+				break;
+			case SDLK_d:
+				_camera2d.setPosition(_camera2d.getPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
+				break;
+			case SDLK_q:
+				_camera2d.setScale(_camera2d.getScale() + SCALE_SPEED);
+				break;
+			case SDLK_e:
+				_camera2d.setScale(_camera2d.getScale() - SCALE_SPEED);
+				break;
+			}
 			break;
 		}
 	}
@@ -115,6 +147,12 @@ void MainGame::drawGame() {
 	//Set the constantly changing time variable
 	GLint timeLocation = _colorProgram.getUniformLocation("time");
 	glUniform1f(timeLocation, _time);
+
+	GLint pLocation = _colorProgram.getUniformLocation("P");
+	glm::mat4 cameraMatrix = _camera2d.getCameraMatrix();
+
+	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
+
 
 	//Draw our sprite!
 	for (int i = 0; i < _sprites.size(); i++) {

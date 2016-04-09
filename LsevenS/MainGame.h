@@ -24,7 +24,8 @@ including commercial application
 #include <PragmaEngine\Sprite.h>
 #include <PragmaEngine\Engine.h>
 #include <PragmaEngine\Window.h>
-
+#include <PragmaEngine\Errors.h>
+#include <PragmaEngine\Camera2D.h>
 
 enum class GameState { PLAY, EXIT };
 
@@ -52,6 +53,7 @@ private:
     std::vector <PragmaEngine::Sprite*> _sprites;
 
 	PragmaEngine::GLSLProgram _colorProgram;
+	PragmaEngine::Camera2D _camera2d;
 
     float _fps;
     float _maxFPS = 500.0f;

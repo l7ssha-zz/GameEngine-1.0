@@ -12,17 +12,15 @@ including commercial application
 
 ------------------------- GAME ENGINE BY L7SSHA | ALL RIGTS RESERVED -------------------------
 */
-#pragma once
-//This file holds some global error functions
+#pragma once	//This file holds some global error functions
 
 #include <string>
 #include <cstdlib>
-
 #include <iostream>
 #include <SDL/SDL.h>
 
 namespace PragmaEngine {
 
 	extern void fatalError(std::string errorString);
-
+	/* extern void fatalerrorTest(std::string errorString); */
 }
