@@ -19,14 +19,16 @@ MainGame::~MainGame()
 void MainGame::run() {
 	initSystems();
 
+	/*
 	//Initialize our sprites. (temporary)
 	_sprites.push_back(new PragmaEngine::Sprite());
 	_sprites.back()->init(0.0f, 0.0f, _screenWidth / 2, _screenWidth / 2, "Textures/jimmyJump_pack/PNG/CharacterRight_Standing.png");
 
 	_sprites.push_back(new PragmaEngine::Sprite());
 	_sprites.back()->init(_screenWidth / 2, 0.0f, _screenWidth / 2, _screenWidth / 2, "Textures/jimmyJump_pack/PNG/CharacterRight_Standing.png");
-
+	*/
 	//This only returns when the game ends
+
 	gameLoop();
 }
 
@@ -34,10 +36,9 @@ void MainGame::run() {
 void MainGame::initSystems() {
 
 	_window.createWindow("Game Window", 600, 800, 0);	//create window
-
 	_window.WindowAtributes(); //Tell SDL that we want a double buffered window so we dont get any flickering
 
-	//PragmaEngine::fatalerrorTest("ERROR");
+	_spriteBatch.init();
 
 	initShaders();
 }
@@ -76,9 +77,8 @@ void MainGame::gameLoop() {
 
 		float frameTicks = SDL_GetTicks() - startTicks;
 		//Limit the FPS to the max FPS
-		if (1000.0f / _maxFPS > frameTicks) {
+		if (1000.0f / _maxFPS > frameTicks)
 			SDL_Delay((Uint32)(1000.0f / _maxFPS - frameTicks));
-		}
 	}
 }
 
@@ -148,16 +148,31 @@ void MainGame::drawGame() {
 	GLint timeLocation = _colorProgram.getUniformLocation("time");
 	glUniform1f(timeLocation, _time);
 
+	//Set the camera matrix
 	GLint pLocation = _colorProgram.getUniformLocation("P");
 	glm::mat4 cameraMatrix = _camera2d.getCameraMatrix();
 
 	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 
+	_spriteBatch.begin();
 
-	//Draw our sprite!
-	for (int i = 0; i < _sprites.size(); i++) {
-		_sprites[i]->draw();
+	glm::vec4 pos(0.0f, 0.0f, 50.0f, 50.0f);
+	glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
+	static PragmaEngine::GLTexture texture = PragmaEngine::ResourceManager::getTexture("Textures/jimmyJump_pack/PNG/CharacterRight_Standing.png");
+	PragmaEngine::Color color;
+	color.r = 255;
+	color.g = 255;
+	color.b = 255;
+	color.a = 255;
+
+	for (int i = 0; i < 500; i++) {
+		_spriteBatch.draw(pos, uv, texture.id, 0.0f, color);
+		_spriteBatch.draw(pos + glm::vec4(50, 0, 0, 0), uv, texture.id, 0.0f, color);
 	}
+
+	_spriteBatch.end();
+
+	_spriteBatch.renderBatch();
 
 	//unbind the texture
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -193,27 +208,22 @@ void MainGame::calculateFPS() {
 	int count;
 
 	currentFrame++;
-	if (currentFrame < NUM_SAMPLES) {
+	if (currentFrame < NUM_SAMPLES)
 		count = currentFrame;
-	}
-	else {
+	else
 		count = NUM_SAMPLES;
-	}
 
 	//Average all the frame times
 	float frameTimeAverage = 0;
-	for (int i = 0; i < count; i++) {
+	for (int i = 0; i < count; i++)
 		frameTimeAverage += frameTimes[i];
-	}
 	frameTimeAverage /= count;
 
 	//Calculate FPS
-	if (frameTimeAverage > 0) {
+	if (frameTimeAverage > 0)
 		_fps = 1000.0f / frameTimeAverage;
-	}
-	else {
+	else
 		_fps = 60.0f;
-	}
 
 
 }
