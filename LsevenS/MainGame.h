@@ -46,7 +46,6 @@ private:
     void gameLoop();
     void processInput();
     void drawGame();
-    void calculateFPS();
 
     PragmaEngine::Window _window;
     int _screenWidth;
