@@ -41,6 +41,8 @@ void MainGame::initSystems() {
 	_spriteBatch.init();
 
 	initShaders();
+
+	_FPSLimiter.init(_maxFPS);
 }
 
 void MainGame::initShaders() {
@@ -56,29 +58,25 @@ void MainGame::gameLoop() {
 
 	//Will loop until we set _gameState to EXIT
 	while (_gameState != GameState::EXIT) {
-		//Used for frame time measuring
-		float startTicks = SDL_GetTicks();
+
+		_FPSLimiter.begin();
 
 		processInput();
-		_time += 0.01;
+		_time += 0.1;
 
 		_camera2d.update();
 
 		drawGame();
-		calculateFPS();
+
+		_fps = _FPSLimiter.end();
 
 		//print only once every 10 frames
 		static int frameCounter = 0;
 		frameCounter++;
-		if (frameCounter == 80) {
-			std::cout << floor(_fps) << std::endl;
+		if (frameCounter == 10) {
+			std::cout << _fps << std::endl;
 			frameCounter = 0;
 		}
-
-		float frameTicks = SDL_GetTicks() - startTicks;
-		//Limit the FPS to the max FPS
-		if (1000.0f / _maxFPS > frameTicks)
-			SDL_Delay((Uint32)(1000.0f / _maxFPS - frameTicks));
 	}
 }
 
@@ -86,7 +84,7 @@ void MainGame::gameLoop() {
 void MainGame::processInput() {
 	SDL_Event evnt;
 
-	const float CAMERA_SPEED = 20.0f;
+	const float CAMERA_SPEED = 2.0f;
 	const float SCALE_SPEED = 0.1f;
 
 	//Will keep looping until there are no more events to process
@@ -96,33 +94,39 @@ void MainGame::processInput() {
 			_gameState = GameState::EXIT;
 			break;
 		case SDL_MOUSEMOTION:
-			//std::cout << evnt.motion.x << " " << evnt.motion.y << std::endl;
+			_inputManager.SetMouseCoords(evnt.motion.x, evnt.motion.y);
 			break;
 		case SDL_KEYDOWN:
-			switch (evnt.key.keysym.sym) {
-				//Get the input and use it to move the camera
-				//THIS IS TEMPORARY
-			case SDLK_w:
-				_camera2d.setPosition(_camera2d.getPosition() + glm::vec2(0.0f, -CAMERA_SPEED));
-				break;
-			case SDLK_s:
-				_camera2d.setPosition(_camera2d.getPosition() + glm::vec2(0.0f, CAMERA_SPEED));
-				break;
-			case SDLK_a:
-				_camera2d.setPosition(_camera2d.getPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
-				break;
-			case SDLK_d:
-				_camera2d.setPosition(_camera2d.getPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
-				break;
-			case SDLK_q:
-				_camera2d.setScale(_camera2d.getScale() + SCALE_SPEED);
-				break;
-			case SDLK_e:
-				_camera2d.setScale(_camera2d.getScale() - SCALE_SPEED);
-				break;
-			}
+			_inputManager.pressKey(evnt.key.keysym.sym);
+			break;
+		case SDL_KEYUP:
+			_inputManager.releaseKey(evnt.key.keysym.sym);
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			_inputManager.pressKey(evnt.button.button);
+			break;
+		case SDL_MOUSEBUTTONUP:
+			_inputManager.releaseKey(evnt.button.button);
 			break;
 		}
+	}
+
+	if (_inputManager.isKeyPressed(SDLK_w))
+		_camera2d.setPosition(_camera2d.getPosition() + glm::vec2(0.0f, -CAMERA_SPEED));
+	if (_inputManager.isKeyPressed(SDLK_s))
+		_camera2d.setPosition(_camera2d.getPosition() + glm::vec2(0.0f, CAMERA_SPEED));
+	if (_inputManager.isKeyPressed(SDLK_a))
+		_camera2d.setPosition(_camera2d.getPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
+	if (_inputManager.isKeyPressed(SDLK_d))
+		_camera2d.setPosition(_camera2d.getPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
+	if (_inputManager.isKeyPressed(SDLK_q))
+		_camera2d.setScale(_camera2d.getScale() + SCALE_SPEED);
+	if (_inputManager.isKeyPressed(SDLK_e))
+		_camera2d.setScale(_camera2d.getScale() - SCALE_SPEED);
+	if (_inputManager.isKeyPressed(SDL_BUTTON_LEFT)) {
+		glm::vec2 mouseCords = _inputManager.getMouseCoords();
+		mouseCords = _camera2d.convertScreenToWorld(mouseCords);
+		std::cout << "x: " << mouseCords.x << " " << "y: " << mouseCords.y << std::endl;
 	}
 }
 
@@ -144,10 +148,6 @@ void MainGame::drawGame() {
 	//Tell the shader that the texture is in texture unit 0
 	glUniform1i(textureLocation, 0);
 
-	//Set the constantly changing time variable
-	GLint timeLocation = _colorProgram.getUniformLocation("time");
-	glUniform1f(timeLocation, _time);
-
 	//Set the camera matrix
 	GLint pLocation = _colorProgram.getUniformLocation("P");
 	glm::mat4 cameraMatrix = _camera2d.getCameraMatrix();
@@ -165,10 +165,9 @@ void MainGame::drawGame() {
 	color.b = 255;
 	color.a = 255;
 
-	for (int i = 0; i < 500; i++) {
-		_spriteBatch.draw(pos, uv, texture.id, 0.0f, color);
-		_spriteBatch.draw(pos + glm::vec4(50, 0, 0, 0), uv, texture.id, 0.0f, color);
-	}
+	
+	_spriteBatch.draw(pos, uv, texture.id, 0.0f, color);
+	_spriteBatch.draw(pos + glm::vec4(50, 0, 0, 0), uv, texture.id, 0.0f, color);
 
 	_spriteBatch.end();
 

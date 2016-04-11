@@ -27,6 +27,8 @@ including commercial application
 #include <PragmaEngine\Errors.h>
 #include <PragmaEngine\Camera2D.h>
 #include <PragmaEngine\SpriteBatch.h>
+#include <PragmaEngine\InputManager.h>
+#include <PragmaEngine\Timing.h>
 
 enum class GameState { PLAY, EXIT };
 
@@ -57,8 +59,11 @@ private:
 	PragmaEngine::Camera2D _camera2d;
 	PragmaEngine::SpriteBatch _spriteBatch;
 
+	PragmaEngine::InputManager _inputManager;
+	PragmaEngine::FpsLimiter _FPSLimiter;
+
     float _fps;
-    float _maxFPS = 500.0f;
+    float _maxFPS = 100.0f;
     float _frameTime;
 
     float _time;
